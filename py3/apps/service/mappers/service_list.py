@@ -1,17 +1,17 @@
-from bpmappers import Mapper
+from bpmappers import Mapper, djangomodel
 from bpmappers.fields import (
     NonKeyDelegateField,
     RawField,
     ListDelegateField,
 )
-from py3.apps.models import Category
+from py3.apps.models import Service
 
 class ServiceMapperForServiceList(Mapper):
     service_id = RawField('id')
     service_name = RawField('name')
 
 
-class ServiceCategoryMapperDorServiceList(Mapper):
+class ServiceCategoryMapperForServiceList(Mapper):
     service_category = RawField('name')
 
 
@@ -24,7 +24,7 @@ class ServiceListMapper(Mapper):
     service = NonKeyDelegateField(ServiceMapperForServiceList,
                                   attach_parent=True)
     service_category = NonKeyDelegateField(
-        ServiceCategoryMapperDorServiceList,
+        ServiceCategoryMapperForServiceList,
         attach_parent=True
     )
 
@@ -43,3 +43,27 @@ class CategoryForStoreMapper(Mapper):
 class CategoryMapper(Mapper):
     name = RawField('name')
     description = RawField('description')
+
+    # description = RawField('description')
+    # stores = ListDelegateField(StoreMapperForServiceList)
+
+#
+# class StoreListMapper(Mapper):
+#     name = RawField('name')
+#     description = RawField('description')
+#     phone_number = RawField('phone_number')
+#     address = RawField('address')
+#     categories = ListDelegateField(CategoryListMapper)
+
+
+class StoreMapper(Mapper):
+    store_id = RawField('id')
+    store_name = RawField('name')
+    description = RawField('description')
+
+
+class ServiceListStoreMapper(djangomodel.ModelMapper):
+    name = RawField()
+
+
+

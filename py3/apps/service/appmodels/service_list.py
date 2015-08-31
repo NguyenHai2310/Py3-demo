@@ -7,13 +7,13 @@ from py3.apps.models import (
 
 class ServiceListAppModel(object):
 
-    @classmethod
+    # @classmethod
     def get_service_list(cls, search_query):
         queryset = cls._get_queryset()
         queryset = cls._filter(queryset, search_query)
         return queryset
 
-    @classmethod
+    # @classmethod
     def _get_queryset(cls):
         service_list_qs = Service.sa.query(
             Service.sa,
@@ -21,14 +21,14 @@ class ServiceListAppModel(object):
         ).distinct()
         return service_list_qs
 
-    @classmethod
+    # @classmethod
     def _filter(cls, queryset, search_query):
         run_cls_method = [attr for attr in dir(cls) if '_filter_' in attr]
         for method in run_cls_method:
             queryset = getattr(cls, method)(queryset, **search_query)
         return queryset
 
-    @classmethod
+    # @classmethod
     def _filter_category(cls, queryset, category=None, **kwargs):
         if not category:
             return queryset
@@ -43,22 +43,12 @@ class CategoryListAppModel(object):
             return Store.sa.query(Category.sa, Store.sa).filter(Category.sa.name == category).distinct()
         return Category.sa.query(Category.sa).distinct()
 
-# class StoreListAppModel(object):
-#
-#     @classmethod
-#     def get_store_list(cls, search_query):
-#         queryset = cls._get_queryset()
-#         queryset = cls._filter(queryset, search_query)
-#         return queryset
-#
-#     @classmethod
-#     def _get_queryset(cls):
-#         store_list_qa = Category.sa.query(Store.sa)
-#         return store_list_qa
-#
-#     @classmethod
-#     def _filter(cls, queryset, search_query):
-#         run_cls_method = [attr for attr in dir(cls) if '_filter_' in attr]
-#         for method in run_cls_method:
-#             queryset = getattr(cls, method)(queryset, **search_query)
-#         return queryset
+
+class StoreList(object):
+
+    @classmethod
+    def get_store_list(cls, store=None):
+        if store:
+            return Service.sa.query().join(Store.sa).filter(Store.sa.name==store).distinct()
+        return Store.sa.query(Store.sa)
+
