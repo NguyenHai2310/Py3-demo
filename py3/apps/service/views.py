@@ -1,15 +1,16 @@
 from rest_framework.response import Response
 from py3.apps.service.appmodels import ServiceListAppModel
 from py3.apps.service.mappers import ServiceListMapper
-from py3.apps.service.mappers.service_list import  CategoryForStoreMapper, CategoryMapper
-from py3.apps.service.appmodels.service_list import CategoryListAppModel
+from py3.apps.service.mappers.service_list import CategoryMapper, StoreMapper, ServiceListStoreMapper, CategoryForStoreMapper
+from py3.apps.service.appmodels.service_list import CategoryListAppModel, StoreList
+
 
 from py3.lib.rest_framework.custom_views import FramgiaAPIView
 
 
 class ServiceListView(FramgiaAPIView):
 
-    def get(self, request, category=None, service=None, format=None):
+    def get(self, request, category=None, service=None, store=None):
 
         search_query = self.convert_querydict_to_dict(request.QUERY_PARAMS)
 
@@ -52,3 +53,21 @@ class CategoryListView(FramgiaAPIView):
 #         data = [StoreListMapper(store).as_dict() for store in qs]
 #         self.get_response_data(data)
 #         return  Response(self.response_data)
+
+
+class ServiceListViewByStore(FramgiaAPIView):
+
+    def get(self, request, store=None):
+        search_query = self.convert_querydict_to_dict(request.QUERY_PARAMS)
+
+        if store:
+            search_query['store'] = store
+            qs = StoreList.get_store_list(store)
+            data = [ServiceListStoreMapper(store).as_dict() for store in qs]
+        else:
+            qs = StoreList.get_store_list()
+            data = [StoreMapper(store).as_dict() for store in qs]
+
+        self.get_response_data(data)
+        return Response(self.response_data)
+
