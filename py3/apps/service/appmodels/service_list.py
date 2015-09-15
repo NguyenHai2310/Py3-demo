@@ -48,6 +48,10 @@ class StoreList(object):
 
     @classmethod
     def get_store_list(cls, store=None):
+        """
+
+        :rtype : object
+        """
         if store:
             return Service.sa.query().join(Store.sa).filter(Store.sa.name==store).distinct()
         return Store.sa.query(Store.sa)
